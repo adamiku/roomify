@@ -5,7 +5,7 @@ import {
 	PROGRESS_INTERVAL_MS,
 	PROGRESS_STEP,
 	REDIRECT_DELAY_MS,
-} from "../../lib/constant";
+} from "@lib/constants";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
