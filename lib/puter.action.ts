@@ -59,7 +59,7 @@ export const createProject = async ({
 			: undefined;
 
 	const {
-		sourcePath: _sorucePath,
+		sourcePath: _sourcePath,
 		renderedPath: _renderedPath,
 		publicPath: _publicPath,
 		...rest

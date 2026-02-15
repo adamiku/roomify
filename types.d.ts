@@ -67,11 +67,6 @@ interface VisualizerProps {
 	canUnshare?: boolean;
 }
 
-interface UploadProps {
-	onComplete: (base64File: string) => Promise<boolean | void> | boolean | void;
-	className?: string;
-}
-
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	variant?: "primary" | "secondary" | "ghost" | "outline";
 	size?: "sm" | "md" | "lg";

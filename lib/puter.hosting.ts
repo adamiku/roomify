@@ -22,11 +22,13 @@ export const getOrCreateHostingConfig =
 		}
 
 		const subdomain = createHostingSlug();
+
 		try {
 			const created = await puter.hosting.create(subdomain, ".");
-			return {
-				subdomain: created.subdomain,
-			};
+			const config: HostingConfig = { subdomain: created.subdomain };
+
+			await puter.kv.set(HOSTING_CONFIG_KEY, config);
+			return config;
 		} catch (error) {
 			console.warn(`Failed to create hosting config: ${error}`);
 			return null;
