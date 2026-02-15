@@ -8,7 +8,7 @@ import {
 } from "../../lib/constant";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
-
+const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png", "image/jpg"];
 interface UploadProps {
 	onComplete: (base64Data: string) => void;
 }
@@ -104,10 +104,12 @@ export const Upload = ({ onComplete }: UploadProps) => {
 
 		if (!isSignedIn) return;
 
-		const files = e.dataTransfer.files;
-		if (files.length > 0) {
-			processFile(files[0]);
+		const file = e.dataTransfer.files[0];
+
+		if (file && ALLOWED_FILE_TYPES.includes(file.type)) {
+			processFile(file);
 		}
+		return;
 	};
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
