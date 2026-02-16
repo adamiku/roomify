@@ -119,7 +119,7 @@ export default function Visualizer() {
 					<div className="panel-header">
 						<div className="panel-meta">
 							<p>Project</p>
-							<h2>{project?.name || `Residenc ${id}`}</h2>
+							<h2>{project?.name || `Residence ${id}`}</h2>
 							<p className="note">Created by You</p>
 						</div>
 
