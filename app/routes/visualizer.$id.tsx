@@ -1,34 +1,53 @@
 import { generate3DView } from "@lib/ai.action";
+import { createProject, getProjectById } from "@lib/puter.action";
 import { Box, Download, RefreshCcw, Share2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate, useOutletContext, useParams } from "react-router";
 import { Button } from "~/components/ui/Button";
 
 export default function Visualizer() {
+	const { id } = useParams();
 	const navigate = useNavigate();
-	const location = useLocation();
-	const { initialImage, initialRender, name } = location.state || {};
+	const { userId } = useOutletContext<AuthContext>();
 
 	const hasInitialGenerated = useRef(false);
+
+	const [project, setProject] = useState<DesignItem | null>(null);
+	const [isProjectLoading, setIsProjectLoading] = useState(true);
 	const [isProcessing, setIsProcessing] = useState(false);
-	const [currentImage, setCurrentImage] = useState<string | null>(
-		initialRender || null,
-	);
+	const [currentImage, setCurrentImage] = useState<string | null>(null);
 
 	const handleBack = () => navigate("/");
 
-	const runGeneration = async () => {
-		if (!initialImage) return;
+	const runGeneration = async (item: DesignItem) => {
+		if (!id || !item.sourceImage) return;
 
 		try {
 			setIsProcessing(true);
-			const { renderedImage } = await generate3DView({
-				sourceImage: initialImage,
+
+			const { renderedImage, renderedPath } = await generate3DView({
+				sourceImage: item.sourceImage,
 			});
 
 			if (!renderedImage) return;
 
 			setCurrentImage(renderedImage);
+			const updatedItem = {
+				...item,
+				renderedImage,
+				renderedPath,
+				timestamp: Date.now(),
+				ownerId: item.ownerId ?? userId ?? null,
+				isPublic: item.isPublic ?? false,
+			};
+			const saved = await createProject({
+				item: updatedItem,
+				visibility: "private",
+			});
+
+			if (!saved) return;
+			setProject(saved);
+			setCurrentImage(saved.renderedImage || renderedImage);
 		} catch (error) {
 			console.error("Generation failed", error);
 		} finally {
@@ -37,17 +56,50 @@ export default function Visualizer() {
 	};
 
 	useEffect(() => {
-		if (!initialImage || hasInitialGenerated.current) return;
+		let isMounted = true;
 
-		if (initialRender) {
-			setCurrentImage(initialRender);
+		const loadProject = async () => {
+			if (!id) {
+				setIsProjectLoading(false);
+				return;
+			}
+
+			setIsProjectLoading(true);
+
+			const fetchedProject = await getProjectById({ id });
+
+			if (!isMounted) return;
+
+			setProject(fetchedProject);
+			setCurrentImage(fetchedProject?.renderedImage || null);
+			setIsProjectLoading(false);
+			hasInitialGenerated.current = false;
+		};
+
+		loadProject();
+
+		return () => {
+			isMounted = false;
+		};
+	}, [id]);
+
+	useEffect(() => {
+		if (
+			isProjectLoading ||
+			hasInitialGenerated.current ||
+			!project?.sourceImage
+		)
+			return;
+
+		if (project.renderedImage) {
+			setCurrentImage(project.renderedImage);
 			hasInitialGenerated.current = true;
 			return;
 		}
 
 		hasInitialGenerated.current = true;
-		runGeneration();
-	}, [initialImage, initialRender]);
+		void runGeneration(project);
+	}, [project, isProjectLoading]);
 
 	return (
 		<div className="visualizer">
@@ -67,7 +119,7 @@ export default function Visualizer() {
 					<div className="panel-header">
 						<div className="panel-meta">
 							<p>Project</p>
-							<h2>{"Untitled project"}</h2>
+							<h2>{project?.name || `Residence ${id}`}</h2>
 							<p className="note">Created by You</p>
 						</div>
 
@@ -97,9 +149,9 @@ export default function Visualizer() {
 							/>
 						) : (
 							<div className="render-placeholder">
-								{initialImage && (
+								{project?.sourceImage && (
 									<img
-										src={initialImage}
+										src={project?.sourceImage}
 										alt="Original"
 										className="render-fallback"
 									/>
