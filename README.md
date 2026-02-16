@@ -1,24 +1,33 @@
-# Welcome to React Router!
+# Roomify
 
-A modern, production-ready template for building full-stack React applications using React Router.
+AI-powered room design and visualization tool that transforms floor plans into stunning 3D renderings.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+🌐 **Live Demo:** [https://roomifyy-qejdt.puter.site/](https://roomifyy-qejdt.puter.site/)
 
 ## Features
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- 🎨 **AI 3D Visualization** - Transform floor plans into photorealistic 3D renders
+- 📤 **Image Upload** - Supports JPG/PNG formats up to 10MB
+- 🔄 **Before/After Comparison** - Interactive slider to compare original and rendered images
+- 💾 **Project Management** - Save and organize multiple design projects
+- 📥 **Image Export** - Download rendered visualizations
+- ☁️ **Cloud Storage** - Powered by Puter.js for seamless data persistence
+- ⚡️ **Real-time Rendering** - Live generation feedback with processing indicators
+
+## Tech Stack
+
+- **Frontend Framework:** React 19 + React Router 7
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS 4
+- **Backend/Storage:** Puter.js
+- **Build Tool:** Vite
+- **UI Components:**
+  - Lucide React (icons)
+  - react-compare-slider (comparison tool)
 
 ## Getting Started
 
 ### Installation
-
-Install the dependencies:
 
 ```bash
 npm install
@@ -26,62 +35,46 @@ npm install
 
 ### Development
 
-Start the development server with HMR:
-
 ```bash
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+App available at `http://localhost:5173`
 
-## Building for Production
-
-Create a production build:
+### Production Build
 
 ```bash
 npm run build
+npm run start
+```
+
+## Project Structure
+
+```
+├── app/
+│   ├── routes/
+│   │   ├── home.tsx              # Landing page & project list
+│   │   └── visualizer.$id.tsx    # 3D visualization editor
+│   ├── components/
+│   │   ├── Upload.tsx            # File upload component
+│   │   └── ui/                   # Reusable UI components
+│   └── lib/
+│       ├── ai.action.ts          # AI generation logic
+│       └── puter.action.ts       # Storage/project management
+└── build/
+    ├── client/                    # Static assets
+    └── server/                    # SSR server code
 ```
 
 ## Deployment
 
-### Docker Deployment
-
-To build and run using Docker:
+Currently deployed on Puter.site. For custom deployments, build and serve the SSR application:
 
 ```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+npm run build
+npm run start
 ```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
 
 ---
 
-Built with ❤️ using React Router.
+Built with ❤️ using React Router and Puter.js
